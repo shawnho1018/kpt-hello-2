@@ -1,0 +1,30 @@
+apiVersion: kpt.dev/v1
+kind: Kptfile
+metadata:
+  name: kpt-hello
+upstream:
+  type: git
+  git:
+    repo: https://github.com/shawnho1018/kpt-demo
+    directory: /package-demo/kpt-hello
+    ref: v0.1
+  updateStrategy: resource-merge
+info:
+  site: http://www.kpt-hello.com
+  emails:
+    - shawnho@google.com
+  license: SPDX license identifier
+  description: My Java Package which contains a website made by Flask
+pipeline:
+  mutators:
+    - image: gcr.io/kpt-fn/set-namespace:v0.1
+      configMap:
+        namespace: cosign
+    - image: gcr.io/kpt-fn/apply-setters:v0.2.0
+      configPath: apply-setters.yaml
+  validators:
+    - image: gcr.io/kpt-fn/gatekeeper:v0.2
+inventory:
+  namespace: cosign
+  name: inventory-45680404
+  inventoryID: 38f8c2fbe13d1a2c09454e47aac78e47f8200d2e-1653207423450830000
